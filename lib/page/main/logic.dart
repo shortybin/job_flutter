@@ -6,7 +6,9 @@ class MainLogic extends GetxController {
   final MainState state = MainState();
 
   void tabChange(int index) {
-    state.postion=index;
+    if(state.postion!=index){
+      state.postion=index;
+    }
     update();
   }
 }

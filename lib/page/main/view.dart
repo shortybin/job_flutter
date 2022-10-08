@@ -12,7 +12,7 @@ import 'logic.dart';
 class MainPage extends StatelessWidget {
   final logic = Get.find<MainLogic>();
   final state = Get.find<MainLogic>().state;
-  final _pageController = PageController(initialPage: 0);
+  final _pageController = PageController(initialPage: 0, keepPage: false);
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,10 @@ class MainPage extends StatelessWidget {
           ],
           type: BottomNavigationBarType.fixed,
           currentIndex: state.postion,
-          onTap: (index){
-            _pageController.jumpToPage(index);
+          onTap: (index) {
+            if (_pageController.page != index) {
+              _pageController.jumpToPage(index);
+            }
             logic.tabChange(index);
           },
         ),
@@ -54,16 +56,12 @@ class MainPage extends StatelessWidget {
       return KeepAliveWrapper(child: JobMainPage());
     } else if (state.postion == 1) {
       return KeepAliveWrapper(child: DoubleMeetingMainPage());
-      return DoubleMeetingMainPage();
     } else if (state.postion == 2) {
       return KeepAliveWrapper(child: DeliverMainPage());
-      return DeliverMainPage();
     } else if (state.postion == 3) {
       return KeepAliveWrapper(child: CareerTalkMainPage());
-      return CareerTalkMainPage();
     } else if (state.postion == 4) {
       return KeepAliveWrapper(child: MyMainPage());
-      return MyMainPage();
     } else {
       return Container();
     }
