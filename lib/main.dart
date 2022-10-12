@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jw_job_flutter/router.dart';
+import 'package:wechat_kit/wechat_kit.dart';
 
 void main() {
   runApp(const MyApp());
+  init();
+}
+
+void init() async {
+  await Wechat.instance
+      .registerApp(appId: "wxc06a0cd6e2ead657", universalLink: "");
 }
 
 class MyApp extends StatelessWidget {

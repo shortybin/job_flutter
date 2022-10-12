@@ -7,19 +7,20 @@
 
 class JobBanner {
   JobBanner({
-      num? errno, 
-      String? errmsg, 
-      dynamic userInfo, 
-      List<Data>? data, 
-      num? timestamp, 
-      num? logId,}){
+    num? errno,
+    String? errmsg,
+    dynamic userInfo,
+    List<JobBannerData>? data,
+    num? timestamp,
+    num? logId,
+  }) {
     _errno = errno;
     _errmsg = errmsg;
     _userInfo = userInfo;
     _data = data;
     _timestamp = timestamp;
     _logId = logId;
-}
+  }
 
   JobBanner.fromJson(dynamic json) {
     _errno = json['errno'];
@@ -28,36 +29,47 @@ class JobBanner {
     if (json['data'] != null) {
       _data = [];
       json['data'].forEach((v) {
-        _data?.add(Data.fromJson(v));
+        _data?.add(JobBannerData.fromJson(v));
       });
     }
     _timestamp = json['timestamp'];
     _logId = json['logId'];
   }
+
   num? _errno;
   String? _errmsg;
   dynamic _userInfo;
-  List<Data>? _data;
+  List<JobBannerData>? _data;
   num? _timestamp;
   num? _logId;
-JobBanner copyWith({  num? errno,
-  String? errmsg,
-  dynamic userInfo,
-  List<Data>? data,
-  num? timestamp,
-  num? logId,
-}) => JobBanner(  errno: errno ?? _errno,
-  errmsg: errmsg ?? _errmsg,
-  userInfo: userInfo ?? _userInfo,
-  data: data ?? _data,
-  timestamp: timestamp ?? _timestamp,
-  logId: logId ?? _logId,
-);
+
+  JobBanner copyWith({
+    num? errno,
+    String? errmsg,
+    dynamic userInfo,
+    List<JobBannerData>? data,
+    num? timestamp,
+    num? logId,
+  }) =>
+      JobBanner(
+        errno: errno ?? _errno,
+        errmsg: errmsg ?? _errmsg,
+        userInfo: userInfo ?? _userInfo,
+        data: data ?? _data,
+        timestamp: timestamp ?? _timestamp,
+        logId: logId ?? _logId,
+      );
+
   num? get errno => _errno;
+
   String? get errmsg => _errmsg;
+
   dynamic get userInfo => _userInfo;
-  List<Data>? get data => _data;
+
+  List<JobBannerData>? get data => _data;
+
   num? get timestamp => _timestamp;
+
   num? get logId => _logId;
 
   Map<String, dynamic> toJson() {
@@ -72,7 +84,6 @@ JobBanner copyWith({  num? errno,
     map['logId'] = _logId;
     return map;
   }
-
 }
 
 /// id : 150
@@ -80,40 +91,50 @@ JobBanner copyWith({  num? errno,
 /// image_src : "http://s.laoyaoba.com/jwImg/f63839f1e23dcb2b.png"
 /// has_href : true
 
-class Data {
-  Data({
-      num? id, 
-      String? name, 
-      String? imageSrc,
-      bool? hasHref,}){
+class JobBannerData {
+  JobBannerData({
+    num? id,
+    String? name,
+    String? imageSrc,
+    bool? hasHref,
+  }) {
     _id = id;
     _name = name;
     _imageSrc = imageSrc;
     _hasHref = hasHref;
-}
+  }
 
-  Data.fromJson(dynamic json) {
+  JobBannerData.fromJson(dynamic json) {
     _id = json['id'];
     _name = json['name'];
     _imageSrc = json['image_src'];
     _hasHref = json['has_href'];
   }
+
   num? _id;
   String? _name;
   String? _imageSrc;
   bool? _hasHref;
-Data copyWith({  num? id,
-  String? name,
-  String? imageSrc,
-  bool? hasHref,
-}) => Data(  id: id ?? _id,
-  name: name ?? _name,
-  imageSrc: imageSrc ?? _imageSrc,
-  hasHref: hasHref ?? _hasHref,
-);
+
+  JobBannerData copyWith({
+    num? id,
+    String? name,
+    String? imageSrc,
+    bool? hasHref,
+  }) =>
+      JobBannerData(
+        id: id ?? _id,
+        name: name ?? _name,
+        imageSrc: imageSrc ?? _imageSrc,
+        hasHref: hasHref ?? _hasHref,
+      );
+
   num? get id => _id;
+
   String? get name => _name;
+
   String? get imageSrc => _imageSrc;
+
   bool? get hasHref => _hasHref;
 
   Map<String, dynamic> toJson() {
@@ -124,5 +145,4 @@ Data copyWith({  num? id,
     map['has_href'] = _hasHref;
     return map;
   }
-
 }

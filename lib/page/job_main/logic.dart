@@ -1,22 +1,19 @@
-import 'package:get/get.dart';
-import 'package:jw_job_flutter/bean/job_banner.dart';
+import 'dart:collection';
+
+import 'package:jw_job_flutter/base/page_controller.dart';
 import 'package:jw_job_flutter/bean/job_feed.dart';
 import 'package:jw_job_flutter/http/api_result.dart';
 import 'package:jw_job_flutter/http/http_util.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
+import '../../bean/job_banner.dart';
 import 'state.dart';
 
-class JobMainLogic extends GetxController {
+class JobMainLogic extends PagingController<Data, JobMainState> {
   final JobMainState state = JobMainState();
+  RefreshController refreshController = RefreshController();
 
-  @override
-  void onInit() {
-    super.onInit();
-    getBanner();
-    getList();
-  }
-
-  void getBanner() async {
+  getBanner() async {
     ApiResult<JobBanner> jobBanners = await HttpManager.instance
         .post("position/fairbanner", JobBanner.fromJson);
     if (jobBanners.status == Status.SUCCESS) {
@@ -26,12 +23,32 @@ class JobMainLogic extends GetxController {
     } else {}
   }
 
-  void getList() async {
-    ApiResult<JobFeed> apiResult =
-        await HttpManager.instance.post("position/jobfeed", JobFeed.fromJson);
+  getList() async {
+    Map<String, dynamic> map = HashMap();
+    if (state.afterId != 0) {
+      map["after_id"] = state.afterId;
+    }
+    ApiResult<JobFeed> apiResult = await HttpManager.instance
+        .post("position/jobfeed", JobFeed.fromJson, data: map);
     if (apiResult.status == Status.SUCCESS) {
-      state.jobFeedList.addAll(apiResult.data!.data!);
+      state.listData.addAll(apiResult.data!.data!);
+      state.afterId = state.listData.last.id!.toInt();
       update();
     } else {}
+  }
+
+  @override
+  JobMainState getState() {
+    return state;
+  }
+
+  @override
+  refreshData() async {
+    await Future.wait<void>([getList(), getBanner()]);
+  }
+
+  @override
+  loadMoreData(int page) async {
+    await getList();
   }
 }

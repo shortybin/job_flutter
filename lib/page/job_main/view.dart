@@ -2,6 +2,9 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jw_job_flutter/widget/SliverHeaderDelegate.dart';
+import 'package:jw_job_flutter/widget/job_list_item.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:wechat_kit/wechat_kit.dart';
 
 import 'logic.dart';
 
@@ -12,66 +15,100 @@ class JobMainPage extends StatelessWidget {
     final state = Get.find<JobMainLogic>().state;
     return GetBuilder<JobMainLogic>(
         builder: (loginc) => (Scaffold(
-              appBar: AppBar(),
-              body: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Swiper(
-                          itemCount: state.bannerList.length,
-                          autoplay: state.bannerIsLoop,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Image.network(
-                              state.bannerList[index].imageSrc,
-                              fit: BoxFit.fill,
-                            );
-                          },
-                          pagination: SwiperPagination(),
-                        )),
+              appBar: AppBar(
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.share),
+                    onPressed: () {
+                      Wechat.instance.shareWebpage(
+                        title: "测试",
+                        description: "描述内容",
+                        scene: WechatScene.SESSION,
+                        webpageUrl: 'https://www.baidu.com',
+                      );
+                    },
                   ),
-                  SliverPersistentHeader(
-                      pinned: true,
-                      delegate: SliverHeaderDelegate(
-                          maxHeight: 120,
-                          minHeight: 120,
-                          child: Container(
-                              color: Colors.white,
-                              height: 120,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: double.infinity,
-                                    margin: EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.black, width: 1),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                            padding: EdgeInsets.only(left: 10)),
-                                        Icon(Icons.search),
-                                        Padding(
-                                            padding: EdgeInsets.only(left: 5)),
-                                        Text("搜索职位和公司")
-                                      ],
-                                    ),
-                                  ),
-                                  _TabBar(state.tabs)
-                                ],
-                              )))),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          childCount: state.jobFeedList.length,
-                          (context, index) {
-                    return Text(state.jobFeedList[index].positionName.toString());
-                  }))
                 ],
+              ),
+              body: SmartRefresher(
+                controller: logic.refreshController,
+                enablePullDown: true,
+                enablePullUp: true,
+                onRefresh: () => logic.onRefresh(),
+                onLoading: () => logic.onLoading(),
+                header: const ClassicHeader(
+                  idleText: "下拉刷新",
+                  releaseText: "松开刷新",
+                  completeText: "刷新完成",
+                  refreshingText: "加载中......",
+                ),
+                footer: const ClassicFooter(
+                  idleText: "上拉加载更多",
+                  canLoadingText: "松开加载更多",
+                  loadingText: "加载中......",
+                ),
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Swiper(
+                            itemCount: state.bannerList.length,
+                            autoplay: state.bannerIsLoop,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Image.network(
+                                state.bannerList[index].imageSrc,
+                                fit: BoxFit.fill,
+                              );
+                            },
+                            pagination: SwiperPagination(),
+                          )),
+                    ),
+                    SliverPersistentHeader(
+                        pinned: true,
+                        delegate: SliverHeaderDelegate(
+                            maxHeight: 120,
+                            minHeight: 120,
+                            child: Container(
+                                color: Colors.white,
+                                height: 120,
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 40,
+                                      width: double.infinity,
+                                      margin: EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.black, width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 10)),
+                                          Icon(Icons.search),
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 5)),
+                                          Text("搜索职位和公司")
+                                        ],
+                                      ),
+                                    ),
+                                    _TabBar(state.tabs)
+                                  ],
+                                )))),
+                    SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            childCount: state.listData.length,
+                            (context, index) {
+                      return JobListItem(state.listData[index]);
+                    }))
+                  ],
+                ),
               ),
             )));
   }

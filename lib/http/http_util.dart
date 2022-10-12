@@ -54,6 +54,7 @@ class HttpManager {
   post<T>(String path, T Function(dynamic json) fromJsonT, {data}) async {
     try {
       var post = await dio!.post(path, data: data);
+      print("网络请求数据"+post.data.toString());
       return ApiResult.success(fromJsonT(post.data));
     } on Exception catch (e) {
       return ApiResult.error(e);

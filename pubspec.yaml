@@ -35,6 +35,11 @@ dependencies:
   dio:
   card_swiper:
   json_annotation:
+  wechat_kit: 4.0.3
+  #屏幕适配
+  flutter_screenutil: ^5.5.4
+  #下拉刷新，上拉加载更多
+  pull_to_refresh_flutter3: ^2.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
